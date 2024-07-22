@@ -1,0 +1,141 @@
+# This sample script demonstrates how to place a custom icon on a button or
+# menu entry.
+#
+# IMPORTANT NOTE: if you run this sample, there will be no icon in the button
+# You need to replace the image path with a real existing one.
+# For distributable scripts, it is recommended to place the icons inside the
+# addon folder and access it relative to the py script file for portability
+#
+#
+# Other use cases for UI-previews:
+# - provide a fixed list of previews to select from
+# - provide a dynamic list of preview (eg. calculated from reading a directory)
+#
+# For the above use cases, see the template 'ui_previews_dynamic_enum.py"
+
+
+import os
+import bpy
+from os import path
+from os.path import join
+
+import bpy.utils.previews
+
+
+
+
+class PreviewsExamplePanel(bpy.types.Panel):
+    """Creates a Panel in the Object properties window"""
+    bl_label = "Previews Ex Panel NWR"
+    bl_idname = "OBJECT_PT_previews"
+    bl_space_type = 'PROPERTIES'
+    bl_region_type = 'WINDOW'
+    bl_context = "object"
+
+    def draw(self, context):
+        layout = self.layout
+        pcoll = preview_collections["main"]
+
+    #def execute(self, context):    
+   
+        #bpy.utils.register_class(PreviewsExamplePanel)
+        # my_icon.icon_id can be used in any UI function that accepts
+        # icon_value # try also setting text=""
+        # to get an icon only operator button
+
+############################################################
+
+        pcoll = bpy.utils.previews.new()
+    
+        path = "/home/jason/Pictures/SkyBoxPics/"
+        my_icons_dir = os.path.join("/SkyBoxPics/")
+        preview_collections["main"] = pcoll
+    # load a preview thumbnail of a file and store in the previews collection
+        
+        pcoll.load("j_icon", os.path.join("Pictures/SkyBoxPics/jupiter.png"), 'IMAGE')
+        pcoll.load("m_icon", os.path.join("Pictures/SkyBoxPics/mars.png"), 'IMAGE')
+        pcoll.load("n_icon", os.path.join("Pictures/SkyBoxPics/neptune.png"), 'IMAGE')
+        
+        pcoll.load("earth_icon", os.path.join("Pictures/SkyBoxPics/earth.png"), 'IMAGE')
+        #preview_collections["main"] = pcoll
+
+        #bpy.utils.register_class(PreviewsExamplePanel)
+
+    
+        row0 = layout.row()
+        j_icon = pcoll["j_icon"]
+        row0.operator("buttons.clear_filter", text="Jupiter", icon_value=j_icon.icon_id)
+                
+        row1 = layout.row()
+        m_icon = pcoll["m_icon"]
+        row1.operator("buttons.clear_filter", text="Mars", icon_value=m_icon.icon_id)
+        
+        row2 = layout.row()
+        n_icon = pcoll["n_icon"]
+        row2.operator("buttons.clear_filter", text="Neptune", icon_value=n_icon.icon_id)    
+    
+        
+    
+        for i in os.listdir(path):
+           print (i) 
+        m = i
+
+        row3 = layout.row()
+        earth_icon = pcoll["earth_icon"]
+        row3.operator("buttons.clear_filter", text=m, icon_value=earth_icon.icon_id)
+
+
+
+#########################################################
+        
+
+# We can store multiple preview collections here,
+# however in this example we only store "main"
+preview_collections = {}
+
+
+def register():
+
+    # Note that preview collections returned by bpy.utils.previews
+    # are regular py objects - you can use them to store custom data.
+    import bpy.utils.previews
+    pcoll = bpy.utils.previews.new()
+    
+    #path = "/home/jason/"
+    #my_icons_dir = os.path.join("Pictures/SkyBoxPics/")
+    # load a preview thumbnail of a file and store in the previews collection
+    #pcoll.load("my_icon", os.path.join(my_icons_dir, "jupiter.png"), 'IMAGE')
+
+    preview_collections["main"] = pcoll
+
+    bpy.utils.register_class(PreviewsExamplePanel)
+    
+
+
+def unregister():
+
+    for pcoll in preview_collections.values():
+        bpy.utils.previews.remove(pcoll)
+    preview_collections.clear()
+
+    bpy.utils.unregister_class(PreviewsExamplePanel)
+
+    
+
+
+
+
+if __name__ == "__main__":
+    register()
+    
+    
+    
+
+
+#VERTICLE SLICE
+#grab photos from a pool
+#list photos
+#for pic in SkyBoxPics, itt
+    #make photos clickable
+#show photo images (icons?) #phone has potential icon scaler
+#when export clicked, send photos to specific location
